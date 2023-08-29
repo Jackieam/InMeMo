@@ -49,6 +49,8 @@ python val_vp_detection.py --mode spimg_spmask --batch-size 16 --fold 0 --arr a1
 python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-model pad --output_dir visual_examples
 ```
 
+## Visual Examples
+
 ![Visual_result](https://github.com/Jackieam/InMeMo/raw/master/Figure/visual_examples.png)
 
 ## Acknowledgments
