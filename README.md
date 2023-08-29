@@ -1,8 +1,7 @@
 # InMeMo
 Instruct Me More! Visual Prompting for Visual In-Context Learning
 
-![InMeMo](https://github.com/Jackieam/InMeMo/raw/master/Figure/inmemo.pdf "InMeMo")
-
+![InMeMo](https://github.com/Jackieam/InMeMo/blob/master/Figure/inmemo.pdf)
 
 ## Environment Setup
 ```
