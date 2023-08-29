@@ -1,5 +1,5 @@
 ### Step1: Feature Extraction
-Please extract the image features of train and val of Pascal-5<sup>i</sup>.
+Please extract the image features of train and val of Pascal VOC 2012.
 #### The pixel-level retriever:
 #### val
 ```
