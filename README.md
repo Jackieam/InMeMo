@@ -1,5 +1,5 @@
 # InMeMo
-Instruct Me More! Visual Prompting for Visual In-Context Learning
+Instruct Me More! Random Prompting for Visual In-Context Learning
 ## Environment Setup
 ```
 conda create -n inmemo python=3.8 -y
