@@ -1,5 +1,8 @@
 # InMeMo
 Instruct Me More! Visual Prompting for Visual In-Context Learning
+
+![InMeMo][https://github.com/Jackieam/InMeMo/blob/master/Figure/inmemo.pdf]
+
 ## Environment Setup
 ```
 conda create -n inmemo python=3.8 -y
@@ -45,6 +48,8 @@ python val_vp_detection.py --mode spimg_spmask --batch-size 16 --fold 0 --arr a1
 ```
 python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-model pad --output_dir visual_examples
 ```
+
+![Visual_result][https://github.com/Jackieam/InMeMo/blob/master/Figure/visual_examples.pdf]
 
 ## Acknowledgments
 Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval)
