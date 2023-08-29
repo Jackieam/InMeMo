@@ -1,5 +1,5 @@
 # InMeMo
-Instruct Me More! Visual Prompting for Visual In-Context Learning
+Instruct Me More! Random Prompting for Visual In-Context Learning
 
 ![InMeMo](https://github.com/Jackieam/InMeMo/blob/master/Figure/inmemo.pdf)
 
