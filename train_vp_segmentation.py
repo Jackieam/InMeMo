@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument('--output_dir', default=f'./output_samples')
     parser.add_argument('--device', default='cuda:0',
                         help='device to use for training / testing')
-    parser.add_argument('--base_dir', default='/data/jiahao/pascal-5i', help='pascal base dir')
+    parser.add_argument('--base_dir', default='./pascal-5i', help='pascal base dir')
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--t', default=[0, 0, 0], type=float, nargs='+')
     parser.add_argument('--task', default='segmentation', choices=['segmentation', 'detection'])

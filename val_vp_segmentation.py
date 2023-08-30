@@ -23,7 +23,7 @@ def get_args():
     parser.add_argument("--mode", type=str, default='spimg_spmask',
                         choices=['no_vp', 'spimg_spmask', 'spimg', 'spimg_qrimg', 'qrimg', 'spimg_spmask_qrimg'],
                         help="mode of adding visual prompt on img.")
-    parser.add_argument('--output_dir', default=f'./trainer/8_15_new_support_class/')
+    parser.add_argument('--output_dir', default=f'./output_samples/')
     parser.add_argument('--device', default='cuda:0',
                         help='device to use for training / testing')
     parser.add_argument('--base_dir', default='./pascal-5i', help='pascal base dir')
