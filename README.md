@@ -7,6 +7,11 @@ Instruct Me More! Random Prompting for Visual In-Context Learning
 ```
 conda create -n inmemo python=3.8 -y
 conda activate inmemo
+```
+The PyTorch version needs to be >= 1.8.0, and compatible with the cuda version supported by the GPU.
+
+For NVIDIA GeForce RTX 4090, here is the Installation command:
+```
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
 pip install -r requirements.txt
 ```
@@ -54,4 +59,4 @@ python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-m
 ![Visual_result](https://github.com/Jackieam/InMeMo/raw/master/Figure/visual_examples.png)
 
 ## Acknowledgments
-Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval)
+Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval), [timm](https://github.com/huggingface/pytorch-image-models), [ILM-VP](https://github.com/OPTML-Group/ILM-VP)
