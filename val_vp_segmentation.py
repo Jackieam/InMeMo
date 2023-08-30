@@ -17,7 +17,7 @@ from evaluate_detection.voc_orig import CLASS_NAMES
 
 
 def get_args():
-    parser = argparse.ArgumentParser('ICLVP inference', add_help=False)
+    parser = argparse.ArgumentParser('InMeMo inference for segmentation', add_help=False)
     parser.add_argument('--mae_model', default='mae_vit_large_patch16', type=str, metavar='MODEL',
                         help='Name of model to train')
     parser.add_argument("--mode", type=str, default='spimg_spmask',
