@@ -1,7 +1,7 @@
 # InMeMo
 Instruct Me More! Random Prompting for Visual In-Context Learning
 
-![InMeMo](https://github.com/Jackieam/InMeMo/blob/master/Figure/inmemo.png)
+![InMeMo](Figure/inmemo.png)
 
 ## Environment Setup
 ```
@@ -56,11 +56,11 @@ python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-m
 
 ## Performance
 
-![Performance](https://github.com/Jackieam/InMeMo/raw/master/Figure/performance.png)
+![Performance](Figure/performance.png)
 
 ## Visual Examples
 
-![Visual_result](https://github.com/Jackieam/InMeMo/raw/master/Figure/visual_examples.png)
+![Visual_result](Figure/visual_examples.png)
 
 ## Acknowledgments
 Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval), [timm](https://github.com/huggingface/pytorch-image-models), [ILM-VP](https://github.com/OPTML-Group/ILM-VP)
