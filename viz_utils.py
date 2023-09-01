@@ -1,6 +1,5 @@
 import matplotlib
 import torch.nn.functional as F
-matplotlib.use('Agg')
 import torch
 from PIL import Image
 from torchvision.transforms import transforms, ToPILImage
