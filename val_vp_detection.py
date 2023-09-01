@@ -1,5 +1,5 @@
 import os.path
-from tqdm import trange, tqdm
+from tqdm import tqdm
 from evaluate.reasoning_dataloader import *
 import torchvision
 from evaluate.mae_utils import *
@@ -51,7 +51,7 @@ def get_args():
                         help="the setting of arrangements of canvas")
     parser.add_argument("--vp-model", type=str, default='pad',
                         help="pad prompter.")
-    parser.add_argument('--save_model_path', default='trainer/save_pad_model/spimg_spmask_Adam_fold_0_trn_all_val/2023-08-29_spimg_spmask_fold0_aug_False_schedulercosinewarm_40.0_detection_a1/best.pth',
+    parser.add_argument('--save_model_path',
                         help='model checkpoint')
 
     return parser
@@ -136,7 +136,6 @@ def test_for_generate_results(args):
             generated_result_list[index][113:, 113:] = sub_image
 
             original_image = round_image(original_image_list[index], [WHITE, BLACK])
-            # generated_result = round_image(generated_result_list[index], [WHITE, BLACK], t=args.t)
             generated_result = generated_result_list[index]
             if args.task == 'detection':
                 generated_result = to_rectangle(generated_result)
@@ -144,9 +143,8 @@ def test_for_generate_results(args):
                 examples_save_path + f'generated_image_{image_number}.png')
 
             current_metric = calculate_metric(args, original_image, generated_result, fg_color=WHITE, bg_color=BLACK)
-            # print('current_metric: ', current_metric)
+
             with open(os.path.join(examples_save_path, 'log.txt'), 'a') as log:
-                # log.write(str(idx) + '\t' + str(current_metric) + '\n')
                 log.write(str(image_number) + '\t' + str(current_metric) + '\n')
             image_number += 1
 

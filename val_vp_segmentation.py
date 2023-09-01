@@ -1,5 +1,5 @@
 import os.path
-from tqdm import trange, tqdm
+from tqdm import tqdm
 from trainer import val_pascal_dataloader
 from evaluate.reasoning_dataloader import *
 import torchvision
@@ -9,10 +9,8 @@ from pathlib import Path
 from evaluate.segmentation_utils import *
 from PIL import Image
 from torch.utils.data import DataLoader
-from evaluate_detection.canvas_ds import CanvasDataset4Train, CanvasDataset4Val
 import torch.multiprocessing as mp
 from trainer.train_models import _generate_result_for_canvas, CustomVP
-from evaluate_detection.box_ops import to_rectangle
 from evaluate_detection.voc_orig import CLASS_NAMES
 
 
@@ -51,7 +49,7 @@ def get_args():
                         help="the setting of arrangements of canvas")
     parser.add_argument("--vp-model", type=str, default='pad',  #  ['pad']
                         help="pad prompter")
-    parser.add_argument('--save_model_path', default='trainer/save_pad_model/spimg_spmask_Adam_fold_0_trn_all_val/2023-08-29_spimg_spmask_fold0_fsl_False_aug_False_schedulercosinewarm_40.0_segmentation_a1/best.pth',
+    parser.add_argument('--save_model_path',
                         help='model checkpoint')
 
     return parser

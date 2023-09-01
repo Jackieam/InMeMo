@@ -165,15 +165,15 @@ def train(args):
             grid_stack = grid_stack.to(args.device, dtype=torch.float32)
 
             optimizer.zero_grad()
-            with autocast():  # autocast context for mixed precision
+            with autocast():
                 loss, _, _ = VP(support_img, support_mask, query_img, query_mask, grid_stack)
-                scaled_loss = scaler.scale(loss)  # scale the loss
+                scaled_loss = scaler.scale(loss)
 
-            scaled_loss.backward()  # perform backward pass on scaled loss
-            scaler.step(optimizer)  # perform optimizer step using the scaler
-            scaler.update()  # update the scaler
+            scaled_loss.backward()
+            scaler.step(optimizer)
+            scaler.update()
 
-            epoch_loss += loss.detach()  # make sure to detach the loss for proper syncing between GPUs
+            epoch_loss += loss.detach()
 
         scheduler.step()
 
@@ -191,11 +191,11 @@ def train(args):
             os.makedirs(examples_save_path, exist_ok=True)
             with open(os.path.join(examples_save_path, 'log.txt'), 'w') as log:
                 log.write(str(args) + '\n')
+
             image_number = 0
             # Validation phase
             for i, data in enumerate(tqdm(dataloaders["val"])):
                 len_dataloader = len(dataloaders["val"])
-                # print('len dataloader: ', len_dataloader)
                 support_img, support_mask, query_img, query_mask, grid_stack = \
                     data['support_img'], data['support_mask'], data['query_img'], data['query_mask'], data['grid_stack']
                 support_img = support_img.to(args.device, dtype=torch.float32)
@@ -226,11 +226,11 @@ def train(args):
                     generated_result = generated_result_list[index]
                     if args.task == 'detection':
                         generated_result = to_rectangle(generated_result)
-                    # Image.fromarray((generated_result.cpu().numpy()).astype(np.uint8)).save(
-                    #     examples_save_path + f'generated_image_{image_number}.png')
+                    if args.save_examples:
+                        Image.fromarray((generated_result.cpu().numpy()).astype(np.uint8)).save(
+                            examples_save_path + f'generated_image_{image_number}.png')
 
                     current_metric = calculate_metric(args, original_image, generated_result, fg_color=WHITE, bg_color=BLACK)
-                    # print('current_metric: ', current_metric)
                     with open(os.path.join(examples_save_path, 'log.txt'), 'a') as log:
                         log.write(str(image_number) + '\t' + str(current_metric) + '\n')
                     image_number += 1

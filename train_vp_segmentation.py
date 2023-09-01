@@ -1,5 +1,5 @@
 import os.path
-from tqdm import trange, tqdm
+from tqdm import tqdm
 from trainer import train_pascal_dataloader
 from trainer import val_pascal_dataloader
 from trainer import train_fewshot_pascal_dataloader
@@ -10,7 +10,7 @@ import argparse
 from pathlib import Path
 from evaluate.segmentation_utils import *
 from PIL import Image
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 import torch.multiprocessing as mp
 from trainer.train_models import _generate_result_for_canvas, CustomVP, Scheduler
 from torch.cuda.amp import autocast, GradScaler
@@ -47,7 +47,7 @@ def get_args():
     parser.add_argument('--save_examples', action='store_true', help='whether save the example in val')
 
     # training settings
-    parser.add_argument("--batch-size", type=int, default=16,
+    parser.add_argument("--batch-size", type=int, default=32,
                         help="Number of images sent to the network in one step.")
     parser.add_argument("--lr", type=float, default=40,
                         help="Base learning rate for training with polynomial decay.")
@@ -238,9 +238,8 @@ def train(args):
                 original_image = round_image(original_image_list[index], [WHITE, BLACK])
                 generated_result = round_image(generated_result_list[index], [WHITE, BLACK], t=args.t)
                 current_metric = calculate_metric(args, original_image, generated_result, fg_color=WHITE, bg_color=BLACK)
-                # print('current_metric: ', current_metric)
+
                 with open(os.path.join(examples_save_path, 'log.txt'), 'a') as log:
-                    # log.write(str(idx) + '\t' + str(current_metric) + '\n')
                     log.write(str(image_number) + '\t' + str(current_metric) + '\n')
                 image_number += 1
 
