@@ -1,5 +1,4 @@
-# InMeMo
-Instruct Me More! Random Prompting for Visual In-Context Learning
+# Instruct Me More! Random Prompting for Visual In-Context Learning (InMeMo)
 
 ![InMeMo](Figure/inmemo.png)
 
