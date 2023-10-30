@@ -42,7 +42,7 @@ python val_vp_segmentation.py --mode spimg_spmask --batch-size 16 --fold 0 --arr
 ```
 #### Without prompt enhancer
 ```
-python val_vp_segmentation.py --mode bo_vp --batch-size 16 --fold 0 --arr a1 --output_dir visual_examples
+python val_vp_segmentation.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --output_dir visual_examples
 ```
 ### For single object detection
 #### With prompt enhancer
