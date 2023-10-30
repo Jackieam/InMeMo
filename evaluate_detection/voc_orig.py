@@ -260,8 +260,8 @@ class VOCDetection4Val(VisionDataset):
         Returns:
             tuple: (image, target) where target is a dictionary of the XML tree.
         """
-        index, label = self.val_flattened_set[idx]
         # print("self.images[index]: ", self.images[index])
+        index = idx
         img = Image.open(self.images[index]).convert('RGB')
         target, instances = self.load_instances(self.imgids[index])
         # keep instance with a same label
