@@ -129,7 +129,7 @@ class VOCDetection4Val(VisionDataset):
         self.CLASS_NAMES = CLASS_NAMES
         self.MAX_NUM_OBJECTS = 64
         self.no_cats = no_cats
-        self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
+        # self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
 
         for year, image_set in zip(years, image_sets):
 
@@ -180,6 +180,7 @@ class VOCDetection4Val(VisionDataset):
                 image_area = int(s['width'])*int(s['height'])
                 instance_area = instances[0]['area']
                 frac = instance_area / image_area
+                # filter the samples that occupy less than 20% in test set followed mae-vqgan.
                 if frac < 0.2:
                     valid_mask_size_indices.append(index)
             self.images = [self.images[i] for i in range(len(self.images)) if i in valid_mask_size_indices]
