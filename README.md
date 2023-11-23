@@ -5,8 +5,6 @@
 [![Static Badge](https://img.shields.io/badge/cudatoolkit-11.6-1f5e96)](https://developer.nvidia.com/cuda-11-6-0-download-archive)
 [![Static Badge](https://img.shields.io/badge/Python-3.8-blue)](https://www.python.org/downloads/release/python-380/)
 
-
-
 # Instruct Me More! Random Prompting for Visual In-Context Learning (InMeMo)
 
 ![InMeMo](Figure/inmemo.png)
