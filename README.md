@@ -23,7 +23,7 @@ pip install -r requirements.txt
 ```
 ## Preparation
 ### Dataset
-Download the Pascal-5<sup>i</sup> Dataset from [Volumetric-Aggregation-Transformer](https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer), and put it under the ```InMeMo/``` path and rename to ```pascal-5i```.
+Download the Pascal-5<sup>i</sup> Dataset from [Volumetric-Aggregation-Transformer](https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer), and put it under the ```InMeMo/``` path, rename to ```pascal-5i```.
 ### Pre-trained weights for Large-scale Vision Model
 Please follow the [Visual Prompting](https://github.com/amirbar/visual_prompting) to prepare the model and download the ```CVF 1000 epochs``` pre-train checkpoint.
 ## Prompt Retriever
