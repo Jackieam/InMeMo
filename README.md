@@ -2,8 +2,8 @@
 [![Static Badge](https://img.shields.io/badge/InMeMo-ArXiv-b31b1b)](https://arxiv.org/abs/2311.03648)
 [![Static Badge](https://img.shields.io/badge/InMeMo-PDF-pink)](https://arxiv.org/pdf/2311.03648.pdf)
 [![Static Badge](https://img.shields.io/badge/PyTorch-1.12.1-orange)](https://pytorch.org/get-started/previous-versions/#linux-and-windows-10)
-![Static Badge](https://img.shields.io/badge/cudatoolkit-11.6-1f5e96)
-![Static Badge](https://img.shields.io/badge/Python-3.8-blue)
+[![Static Badge](https://img.shields.io/badge/cudatoolkit-11.6-1f5e96)](https://developer.nvidia.com/cuda-11-6-0-download-archive)
+[![Static Badge](https://img.shields.io/badge/Python-3.8-blue)](https://www.python.org/downloads/release/python-380/)
 
 
 
