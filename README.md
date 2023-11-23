@@ -1,3 +1,12 @@
+[![Static Badge](https://img.shields.io/badge/WACV-2024-blue)](https://wacv2024.thecvf.com/)
+[![Static Badge](https://img.shields.io/badge/InMeMo-ArXiv-b31b1b)](https://arxiv.org/abs/2311.03648)
+[![Static Badge](https://img.shields.io/badge/InMeMo-PDF-pink)](https://arxiv.org/pdf/2311.03648.pdf)
+[![Static Badge](https://img.shields.io/badge/PyTorch-1.12.1-orange)](https://pytorch.org/get-started/previous-versions/#linux-and-windows-10)
+![Static Badge](https://img.shields.io/badge/cudatoolkit-11.6-1f5e96)
+![Static Badge](https://img.shields.io/badge/Python-3.8-blue)
+
+
+
 # Instruct Me More! Random Prompting for Visual In-Context Learning (InMeMo)
 
 ![InMeMo](Figure/inmemo.png)
@@ -16,9 +25,9 @@ pip install -r requirements.txt
 ```
 ## Preparation
 ### Dataset
-Download the Pascal-5<sup>i</sup> Dataset from [Volumetric-Aggregation-Transformer](https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer), and put it under the ```InMeMo/``` path.
+Download the Pascal-5<sup>i</sup> Dataset from [Volumetric-Aggregation-Transformer](https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer), and put it under the ```InMeMo/``` path and rename to ```pascal-5i```.
 ### Pre-trained weights for Large-scale Vision Model
-Please follow the [Visual Prompting](https://github.com/amirbar/visual_prompting) to prepare the model.
+Please follow the [Visual Prompting](https://github.com/amirbar/visual_prompting) to prepare the model and download the ```CVF 1000 epochs``` pre-train checkpoint.
 ## Prompt Retriever
 [Foreground Sementation Prompt Retriever](./Segmentation.md)
 
@@ -61,5 +70,15 @@ python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-m
 
 ![Visual_result](Figure/visual_examples.png)
 
+## Citation
+If you find this work useful, please consider citing us as: 
+```
+@article{zhang2023instruct,
+  title={Instruct Me More! Random Prompting for Visual In-Context Learning},
+  author={Zhang, Jiahao and Wang, Bowen and Li, Liangzhi and Nakashima, Yuta and Nagahara, Hajime},
+  journal={arXiv preprint arXiv:2311.03648},
+  year={2023}
+}
+```
 ## Acknowledgments
 Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval), [timm](https://github.com/huggingface/pytorch-image-models), [ILM-VP](https://github.com/OPTML-Group/ILM-VP)

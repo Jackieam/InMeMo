@@ -54,10 +54,10 @@ print("similarity_idx shape: ", similarity_idx.shape)
 similarity_idx_dict = {}
 for _, (cur_example, cur_similarity) in enumerate(zip(source_examples, similarity_idx)):
     # print("cur_example: ", cur_example)
-    img_name = cur_example.strip().split('\\')[-1][:-4]
+    img_name = cur_example.strip().split('/')[-1][:-4]
     # print("img_name: ", img_name)
 
-    cur_similar_name = list(target_examples[target_sample_idx[idx]].strip().split('\\')[-1][:-4] for idx in cur_similarity[::-1])
+    cur_similar_name = list(target_examples[target_sample_idx[idx]].strip().split('/')[-1][:-4] for idx in cur_similarity[::-1])
     cur_similar_name = list(dict.fromkeys(cur_similar_name))
 
     assert len(cur_similar_name) >= 50, "num of cur_similar_name is too small, please enlarge the similarity_idx size"

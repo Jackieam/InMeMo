@@ -129,7 +129,6 @@ class VOCDetection4Val(VisionDataset):
         self.CLASS_NAMES = CLASS_NAMES
         self.MAX_NUM_OBJECTS = 64
         self.no_cats = no_cats
-        # self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
 
         for year, image_set in zip(years, image_sets):
 
@@ -172,7 +171,7 @@ class VOCDetection4Val(VisionDataset):
             self.annotations = [self.annotations[i] for i in range(len(self.annotations)) if i in single_indices]
             self.imgids = [self.imgids[i] for i in range(len(self.imgids)) if i in single_indices]
 
-        if filter_by_mask_size:
+        if filter_by_mask_size and image_set == 'val':
             valid_mask_size_indices = []
             for index in range(len(self.imgids)):
                 target, instances = self.load_instances(self.imgids[index])

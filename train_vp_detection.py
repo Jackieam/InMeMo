@@ -46,6 +46,7 @@ def get_args():
     parser.add_argument('--random', action='store_true')
     parser.add_argument('--ensemble', action='store_true')
     parser.add_argument('--aug', action='store_true')
+    parser.add_argument('--save_examples', action='store_true', help='whether save the example in val')
 
     # train settings
     parser.add_argument("--batch-size", type=int, default=32,
