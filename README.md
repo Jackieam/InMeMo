@@ -9,9 +9,58 @@
 
 ![InMeMo](Figure/inmemo.png)
 
-## News
- * 11/30/2023 The code repository is publicly available.
- * Code is coming soon...
+## Environment Setup
+```
+conda create -n inmemo python=3.8 -y
+conda activate inmemo
+```
+The PyTorch version needs to be >= 1.8.0, and compatible with the cuda version supported by the GPU.
+
+For NVIDIA GeForce RTX 4090, here is the Installation command:
+```
+conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
+pip install -r requirements.txt
+```
+## Preparation
+### Dataset
+Download the Pascal-5<sup>i</sup> Dataset from [Volumetric-Aggregation-Transformer](https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer), and put it under the ```InMeMo/``` path, rename to ```pascal-5i```.
+### Pre-trained weights for Large-scale Vision Model
+Please follow the [Visual Prompting](https://github.com/amirbar/visual_prompting) to prepare the model and download the ```CVF 1000 epochs``` pre-train checkpoint.
+## Prompt Retriever
+[Foreground Sementation Prompt Retriever](./Segmentation.md)
+
+[Single Object Detection Prompt Retriever](./Detection.md)
+## Training
+### For foreground segmentation:
+```
+# Change the fold for training each split.
+python train_vp_segmentation.py --mode spimg_spmask --output_dir output_samples --fold 3 --device cuda:0 --base_dir ./pascal-5i --batch-size 32 --lr 40 --epoch 100 --scheduler cosinewarm --optimizer Adam --arr a1 --vp-model pad --p-eps 1
+```
+### For single object detection:
+```
+python train_vp_detection.py --mode spimg_spmask --output_dir output_samples --device cuda:0 --base_dir ./pascal-5i --batch-size 32 --lr 40 --epoch 100 --scheduler cosinewarm --optimizer Adam --arr a1 --vp-model pad --p-eps 1
+```
+
+## Inference
+### For foreground segmentation
+#### With prompt enhancer
+```
+# Change the fold for testing each split.
+python val_vp_segmentation.py --mode spimg_spmask --batch-size 16 --fold 3 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
+```
+#### Without prompt enhancer
+```
+python val_vp_segmentation.py --mode no_vp --batch-size 16 --fold 3 --arr a1 --output_dir visual_examples
+```
+### For single object detection
+#### With prompt enhancer
+```
+python val_vp_detection.py --mode spimg_spmask --batch-size 16 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
+```
+#### Without prompt enhancer
+```
+python val_vp_detection.py --mode no_vp --batch-size 16 --arr a1 --vp-model pad --output_dir visual_examples
+```
 
 ## Performance
 
@@ -24,11 +73,12 @@
 ## Citation
 If you find this work useful, please consider citing us as: 
 ```
-@article{zhang2023instruct,
+@inproceedings{zhang2024instruct,
   title={Instruct Me More! Random Prompting for Visual In-Context Learning},
   author={Zhang, Jiahao and Wang, Bowen and Li, Liangzhi and Nakashima, Yuta and Nagahara, Hajime},
-  journal={arXiv preprint arXiv:2311.03648},
-  year={2023}
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={2597--2606},
+  year={2024}
 }
 ```
 ## Acknowledgments
