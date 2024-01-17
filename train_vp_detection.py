@@ -245,7 +245,6 @@ def train(args):
                     "epoch": epoch,
                     "best_iou": best_iou,
                 }
-
             if eval_dict['iou'] > best_iou:
                 best_iou = eval_dict['iou']
                 state_dict['best_iou'] = best_iou
