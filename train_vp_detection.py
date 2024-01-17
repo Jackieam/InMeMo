@@ -245,13 +245,7 @@ def train(args):
                     "epoch": epoch,
                     "best_iou": best_iou,
                 }
-            elif args.vp_model == 'mae':
-                state_dict = {
-                    "visual_prompt_dict": VP.coordinator.dec.state_dict(),
-                    "optimizer_dict": optimizer.state_dict(),
-                    "epoch": epoch,
-                    "best_iou": best_iou,
-                }
+
             if eval_dict['iou'] > best_iou:
                 best_iou = eval_dict['iou']
                 state_dict['best_iou'] = best_iou
