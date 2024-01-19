@@ -19,3 +19,4 @@ yacs
 scikit-learn
 einops
 pytorch_lightning
+git+https://github.com/openai/CLIP.git

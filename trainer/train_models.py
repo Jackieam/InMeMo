@@ -2,8 +2,6 @@ import torch.nn as nn
 from evaluate.mae_utils import *
 from evaluate.segmentation_utils import *
 from trainer.visual_prompters import PadPrompter
-import torchvision.transforms as transforms
-from torch.optim.lr_scheduler import _LRScheduler
 import torch.optim as optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
@@ -40,70 +38,6 @@ class ResizeTransform:
         return F.interpolate(img, size=self.size, mode='bilinear', align_corners=False)
 
 
-class _BaseWarmupScheduler(_LRScheduler):
-    def __init__(
-        self,
-        optimizer,
-        successor,
-        warmup_epoch,
-        last_epoch=-1,
-        verbose=False
-    ):
-        self.successor = successor
-        self.warmup_epoch = warmup_epoch
-        super().__init__(optimizer, last_epoch, verbose)
-
-    def step(self, epoch=None):
-        if self.last_epoch >= self.warmup_epoch:
-            # if self.last_epoch == self.warmup_epoch:
-                # Set optimizer's learning rate to 0.1 at the end of warmup
-                # for param_group in self.optimizer.param_groups:
-                #     param_group['lr'] = 0.1
-            self.successor.step(epoch)
-            self._last_lr = self.successor.get_last_lr()
-        else:
-            super().step(epoch)
-
-
-class LinearWarmupScheduler(_BaseWarmupScheduler):
-
-    def __init__(
-        self,
-        optimizer,
-        successor,
-        warmup_epoch,
-        min_lr,
-        last_epoch=-1,
-        verbose=False
-    ):
-        self.min_lr = min_lr
-        super().__init__(
-            optimizer, successor, warmup_epoch, last_epoch, verbose
-        )
-
-    def get_lr(self):
-        if self.last_epoch >= self.warmup_epoch:
-            return self.successor.get_last_lr()
-        if self.last_epoch == 0:
-            return [self.min_lr for _ in self.base_lrs]
-        return [
-            lr * self.last_epoch / self.warmup_epoch for lr in self.base_lrs
-        ]
-
-
-def clip_clipping(x):
-    #! -inf ~ inf -> CLIP's input RGB range
-    if len(x.shape) == 3:
-        out = torch.cat([torch.clip(x[0,:,:], min=-1.79226253, max=1.93033625).unsqueeze(0),
-                     torch.clip(x[1,:,:], min=-1.75209713, max=2.07488384).unsqueeze(0),
-                     torch.clip(x[2,:,:], min=-1.48021977, max=2.14589699).unsqueeze(0)], dim=0)
-    else:
-        out = torch.cat([torch.clip(x[:,0,:,:], min=-1.79226253, max=1.93033625).unsqueeze(1),
-                        torch.clip(x[:,1,:,:], min=-1.75209713, max=2.07488384).unsqueeze(1),
-                        torch.clip(x[:,2,:,:], min=-1.48021977, max=2.14589699).unsqueeze(1)], dim=1)
-    return out
-
-
 def _generate_result_for_canvas(args, model, canvas_pred, canvas_label, arr):
     """canvas is already in the right range."""
     ids_shuffle, len_keep = generate_arr_mask_for_evaluation(arr)
@@ -118,7 +52,6 @@ def _generate_result_for_canvas(args, model, canvas_pred, canvas_label, arr):
         canvas_ = torch.clip((canvas_.cpu().detach() * imagenet_std + imagenet_mean) * 255, 0, 255).int().numpy()
         assert canvas_.shape == im_paste.shape, (canvas_.shape, im_paste.shape)
 
-        # print('canvas shape: ', canvas_.shape)  # (224, 224, 3)
         original_image_list.append(np.uint8(canvas_))
         generated_result_list.append(np.uint8(im_paste))
 

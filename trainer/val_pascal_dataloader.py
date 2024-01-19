@@ -2,14 +2,11 @@
 """
 import os
 from PIL import Image
-from scipy.io import loadmat
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 from evaluate.mae_utils import PURPLE, YELLOW
 import json
-import sys
-import matplotlib.pyplot as plt
 
 
 class DatasetPASCAL(Dataset):
@@ -77,11 +74,9 @@ class DatasetPASCAL(Dataset):
         images_top50_new = {}
         for img_name, img_class in self.all_img_metadata_trn:
             if img_name not in images_top50_new:
-                images_top50_new[img_name] = {'class': []}
+                images_top50_new[img_name] = {}
 
-            # Check if img_class is not already in the list to avoid duplicates.
-            if img_class not in images_top50_new[img_name]['class']:
-                images_top50_new[img_name]['class'].append(img_class)
+            images_top50_new[img_name]['class'] = img_class
 
         return images_top50_new
 
@@ -293,13 +288,7 @@ class DatasetPASCAL(Dataset):
                 support_class = self.images_top50_trn[support_name]['class']
         else:
             support_name = self.images_top50_val[query_name]['top50'][sim_idx]
-
-            support_classes = self.images_top50_trn[support_name]['class']
-            if class_sample in support_classes:
-                support_class = class_sample
-            else:
-                support_class = support_classes[0]
-            # support_class = self.images_top50_trn[support_name]['class']
+            support_class = self.images_top50_trn[support_name]['class']
 
         if support_name == query_name:
             print('support_name = query_name ' + support_name)
@@ -327,9 +316,7 @@ class DatasetPASCAL(Dataset):
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
-            # import pdb;pdb.set_trace()
 
-            # print("fold_n_metadata: ", fold_n_metadata)
             if self.cls_base:
                 new_fold_n_metadata = []
                 for data in fold_n_metadata:
@@ -368,8 +355,6 @@ class DatasetPASCAL(Dataset):
 
         img_metadata = []
         img_metadata = read_metadata(split, self.fold)
-
-        # print('Total (%s) images are : %d' % (split, len(img_metadata)))
 
         return img_metadata
 

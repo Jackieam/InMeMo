@@ -129,7 +129,6 @@ class VOCDetection4Val(VisionDataset):
         self.CLASS_NAMES = CLASS_NAMES
         self.MAX_NUM_OBJECTS = 64
         self.no_cats = no_cats
-        self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
 
         for year, image_set in zip(years, image_sets):
 
@@ -172,7 +171,7 @@ class VOCDetection4Val(VisionDataset):
             self.annotations = [self.annotations[i] for i in range(len(self.annotations)) if i in single_indices]
             self.imgids = [self.imgids[i] for i in range(len(self.imgids)) if i in single_indices]
 
-        if filter_by_mask_size:
+        if filter_by_mask_size and image_set == 'val':
             valid_mask_size_indices = []
             for index in range(len(self.imgids)):
                 target, instances = self.load_instances(self.imgids[index])
@@ -180,6 +179,7 @@ class VOCDetection4Val(VisionDataset):
                 image_area = int(s['width'])*int(s['height'])
                 instance_area = instances[0]['area']
                 frac = instance_area / image_area
+                # filter the samples that occupy less than 20% in test set followed mae-vqgan.
                 if frac < 0.2:
                     valid_mask_size_indices.append(index)
             self.images = [self.images[i] for i in range(len(self.images)) if i in valid_mask_size_indices]
@@ -260,8 +260,8 @@ class VOCDetection4Val(VisionDataset):
         Returns:
             tuple: (image, target) where target is a dictionary of the XML tree.
         """
-        index, label = self.val_flattened_set[idx]
         # print("self.images[index]: ", self.images[index])
+        index = idx
         img = Image.open(self.images[index]).convert('RGB')
         target, instances = self.load_instances(self.imgids[index])
         # keep instance with a same label
@@ -344,7 +344,6 @@ class VOCDetection4Train(VisionDataset):
         self.CLASS_NAMES = CLASS_NAMES
         self.MAX_NUM_OBJECTS = 64
         self.no_cats = no_cats
-        self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
 
         for year, image_set in zip(years, image_sets):
 

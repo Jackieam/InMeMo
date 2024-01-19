@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 import json
 import sys
 import random
-# from evaluate.mae_utils import PURPLE, YELLOW
+from evaluate.mae_utils import PURPLE, YELLOW
 
 
 def create_grid_from_images_old(canvas, support_img, support_mask, query_img, query_mask):

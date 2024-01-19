@@ -6,7 +6,7 @@ from scipy.io import loadmat
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-# from evaluate.mae_utils import PURPLE, YELLOW
+from evaluate.mae_utils import PURPLE, YELLOW
 import json
 import sys
 import random
@@ -150,13 +150,6 @@ class DatasetPASCAL(Dataset):
         canvas = torch.ones((support_img.shape[0], 2 * support_img.shape[1] + 2 * self.padding,
                              2 * support_img.shape[2] + 2 * self.padding))
 
-        # images = [support_img, support_mask, query_img, query_mask]
-        # coordinates = [(0, 0), (0, 1), (1, 0), (1, 1)]
-        #
-        # for i, pos in enumerate(positions):
-        #     x = coordinates[i][0] * support_img.shape[1]
-        #     y = coordinates[i][1] * support_img.shape[2]
-        #     canvas[:, x:x + support_img.shape[1], y:y + support_img.shape[2]] = images[pos]
         if positions == 'a1':
             canvas[:, :support_img.shape[1], :support_img.shape[2]] = support_img
             canvas[:, -query_img.shape[1]:, :query_img.shape[2]] = query_img
@@ -202,23 +195,17 @@ class DatasetPASCAL(Dataset):
 
     def create_all_grids(self, support_img, support_mask, query_img, query_mask):
         canvas_list = []
+
         # List of all possible arrangements
-        # arrangements = [[0, 1, 2, 3], [1, 0, 3, 2], [3, 2, 1, 0], [2, 3, 0, 1],
-        #                 [2, 0, 3, 1], [3, 1, 2, 0], [1, 3, 0, 2], [0, 2, 1, 3]]
         arrangements = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8']
 
         for arr in arrangements:
             canvas = self.create_ensemble_grid_from_images(support_img, support_mask, query_img, query_mask, arr)
             canvas_list.append(canvas)
 
-        # print("canvas_list: ", canvas_list[0])
-        # print("length of canvas_list: ", canvas_list[0].shape)
-
         return canvas_list
 
     def __getitem__(self, idx):
-        # idx %= len(self.img_metadata_val)  # for testing, as n_images < 1000
-        # print('idx: ', idx)
         grid_stack = torch.tensor([]).cuda()
 
         for sim_idx in range(1):
@@ -243,14 +230,8 @@ class DatasetPASCAL(Dataset):
             if self.arr != 'ensemble':
                 grid = self.create_gradiant_grid_images(support_img, support_mask, query_img, query_mask, self.arr)
 
-                # for i in range(len(grid)):
-                #     grid[i] = grid[i].unsqueeze(0)
             else:
                 grid = self.create_all_grids(support_img, support_mask, query_img, query_mask)
-                # grid = grid.unsqueeze(0)
-
-            # print("canvas_list: ", grid)
-            # print("length of canvas_list: ", grid.shape)
 
             if len(grid_stack) == 0:
                 grid_stack = grid
@@ -285,7 +266,6 @@ class DatasetPASCAL(Dataset):
         return Image.fromarray(color_mask), boundary
 
     def load_frame(self, query_name, support_name):
-        # import pdb;pdb.set_trace()
         query_img = self.read_img(query_name)
         query_mask = self.read_mask(query_name)
         support_img = self.read_img(support_name)
@@ -310,9 +290,6 @@ class DatasetPASCAL(Dataset):
         support_name = self.images_top50_for_training[query_name]['top50'][sim_idx]
         support_class = self.images_top50_for_training[support_name]['class']
 
-        # print('support name: ', support_name)
-        # print('support class: ', support_class)
-
         return query_name, support_name, class_sample, support_class
 
     def build_class_ids(self):
@@ -329,7 +306,6 @@ class DatasetPASCAL(Dataset):
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
-            # import pdb;pdb.set_trace()
             fold_n_metadata = [[data.split('__')[0], int(data.split('__')[1]) - 1] for data in fold_n_metadata]
 
             classes = {}
@@ -343,8 +319,6 @@ class DatasetPASCAL(Dataset):
             selected_items = []
             for class_items in classes.values():
                 selected_items.extend(random.sample(class_items, min(n, len(class_items))))
-
-            # print(selected_items)
 
             return selected_items
 
@@ -368,9 +342,6 @@ class DatasetPASCAL(Dataset):
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
-            # import pdb;pdb.set_trace()
-
-            # print("fold_n_metadata: ", fold_n_metadata)
             if self.cluster:
                 fold_n_metadata = [[data.split('__')[0], int(data.split('__')[1]) - 1, int(data.split('__')[2]) - 1] for
                                    data in fold_n_metadata]
@@ -399,61 +370,3 @@ class DatasetPASCAL(Dataset):
                 img_metadata_classwise[img_class] += [img_name]
 
         return img_metadata_classwise
-
-
-# img_paths = 'I:/Pycharmprojects/visual_prompt_retrieval/pascal-5i/VOC2012/JPEGImages/'
-#
-# sup_name = '2011_002605'
-# query_name = '2007_000032'
-# mask_paths = 'I:/Pycharmprojects/visual_prompt_retrieval/pascal-5i/VOC2012/SegmentationClassAug/'
-
-# dataset = TwoImageDataset(img_paths, mask_paths, sup_name, query_name, query_transform=image_query_transform,
-#                           support_transform=image_support_transform)
-# class TwoImageDataset(Dataset):
-#     def __init__(self, img_paths, mask_paths, sup_name, query_name, query_transform=None, support_transform=None):
-#         self.img_paths = img_paths
-#         self.mask_paths = mask_paths
-#         self.sup_name = sup_name
-#         self.query_name = query_name
-#         self.query_transform = query_transform
-#         self.support_transform = support_transform
-#
-#     def __len__(self):
-#         return 1
-#
-#     def __getitem__(self, idx):
-#         sup_img = read_img(self.img_paths + self.sup_name)
-#         sup_mask = read_mask(self.mask_paths + self.sup_name)
-#         sup_mask, ignore_idx = extract_ignore_idx(sup_mask, 0, False)
-#
-#         query_img = read_img(self.img_paths + self.query_name)
-#         query_mask = read_mask(self.mask_paths + self.query_name)
-#         query_mask, ignore_idx = extract_ignore_idx(query_mask, 0, False)
-#
-#         if self.query_transform:
-#             # sup_img = self.query_transform(sup_img)
-#             sup_mask = self.query_transform(sup_mask)
-#             query_img = self.query_transform(query_img)
-#             query_mask = self.query_transform(query_mask)
-#         if self.support_transform:
-#             sup_img = self.support_transform(sup_img)
-#
-#         return sup_img, sup_mask, query_img, query_mask
-
-
-# def cal_loss(model, imgs, pred, mask):
-#     # with torch.no_grad():
-#     target = model.vae.get_codebook_indices(imgs).flatten(1)
-#     # print(target.requires_grad)  # False
-#     # print(target.grad_fn)  # None
-#
-#     # print(pred.requires_grad)  # False
-#     # print(pred.grad_fn)  # None
-#     # print('targe size: ', target.shape)
-#     loss = nn.CrossEntropyLoss(reduction='none')(input=pred.permute(0, 2, 1), target=target)
-#     # print('loss ', loss)
-#     loss = (loss * mask).sum() / mask.sum()  # mean loss on removed patches
-#
-#     return loss
-
-
