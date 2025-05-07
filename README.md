@@ -10,7 +10,7 @@
 ![InMeMo](Figure/inmemo.png)
 
 ## News
-- **[2025/04/29]** Please check the new version of [E-InMeMo](https://arxiv.org/abs/2504.18158)!!
+- **[2025/04/29]** Please check the new version of [E-InMeMo](https://arxiv.org/abs/2504.18158)!
 
 ## Environment Setup
 ```
