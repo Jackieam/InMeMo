@@ -344,7 +344,6 @@ class VOCDetection4Train(VisionDataset):
         self.CLASS_NAMES = CLASS_NAMES
         self.MAX_NUM_OBJECTS = 64
         self.no_cats = no_cats
-        self.val_flattened_set = torch.load('./evaluate_detection/2012_val_flattened_set.pth')
 
         for year, image_set in zip(years, image_sets):
 

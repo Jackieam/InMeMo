@@ -11,12 +11,9 @@ from torch.utils.data import DataLoader
 from evaluate_detection.canvas_ds import CanvasDataset4Train, CanvasDataset4Val
 import torch.multiprocessing as mp
 from trainer.train_models import _generate_result_for_canvas, CustomVP, Scheduler
-from trainer.train_models import LinearWarmupScheduler
 from torch.cuda.amp import autocast, GradScaler
 from evaluate_detection.box_ops import to_rectangle
-import wandb
-from datetime import datetime
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
 
 
 def get_args():
@@ -110,6 +107,8 @@ def train(args):
     if args.vp_model == 'pad':
         print('load pad prompter.')
         VP = CustomVP(args=args, vqgan=vqgan.to(args.device), mode=args.mode, arr=args.arr, p_eps=args.p_eps)
+    else:
+        raise ValueError("Please check the mode of InMeMo!")
 
     VP.to(args.device)
 
@@ -121,9 +120,7 @@ def train(args):
 
     scheduler = Scheduler(args.scheduler, args.epoch).select_scheduler(optimizer)
 
-    today = datetime.today()
-    date = today.date()
-    setting = f'{date}_{args.mode}_fold_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
+    setting = f'{args.mode}_fold_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
 
     model_save_path = f'./trainer/save_{args.vp_model}_model/{args.mode}_{args.optimizer}_fold_{args.task}/{setting}'
     eg_save_path = f'{args.output_dir}/{args.vp_model}_output_examples/{args.mode}_{args.optimizer}_fold_trn_all_val'
@@ -151,12 +148,9 @@ def train(args):
         print("start_training round" + str(epoch))
         print("lr_rate: ", optimizer.param_groups[0]["lr"])
         lr_list.append(optimizer.param_groups[0]["lr"])
-        VP.train()  # set model to train
+        VP.train()
         for i, data in enumerate(tqdm(dataloaders['train'])):
-            # print('data: ', data)
-            # print("len dataloader: ", len(dataloader))
             len_dataloader = len(dataloaders['train'])
-            # print("len dataloader: ", len_dataloader)
             support_img, support_mask, query_img, query_mask, grid_stack =\
                 data['support_img'], data['support_mask'], data['query_img'], data['query_mask'], data['grid_stack']
             support_img = support_img.to(args.device, dtype=torch.float32)
@@ -247,13 +241,6 @@ def train(args):
             if args.vp_model == 'pad':
                 state_dict = {
                     "visual_prompt_dict": VP.PadPrompter.state_dict(),
-                    "optimizer_dict": optimizer.state_dict(),
-                    "epoch": epoch,
-                    "best_iou": best_iou,
-                }
-            elif args.vp_model == 'mae':
-                state_dict = {
-                    "visual_prompt_dict": VP.coordinator.dec.state_dict(),
                     "optimizer_dict": optimizer.state_dict(),
                     "epoch": epoch,
                     "best_iou": best_iou,

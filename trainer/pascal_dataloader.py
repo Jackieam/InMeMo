@@ -95,8 +95,7 @@ class DatasetPASCAL(Dataset):
     def __getitem__(self, idx):
         idx %= len(self.img_metadata_val)  # for testing, as n_images < 1000
         grid_stack = torch.tensor([]).cuda()
-        # for sim_idx in self.iou_dict[str(idx)]:
-            # sim_idx = int(sim_idx)
+
         for sim_idx in range(1):
             query_name, support_name, class_sample_query, class_sample_support = self.sample_episode(idx,sim_idx)
             query_img, query_cmask, support_img, support_cmask, org_qry_imsize = self.load_frame(query_name, support_name)

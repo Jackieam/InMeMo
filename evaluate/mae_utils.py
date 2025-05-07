@@ -132,16 +132,11 @@ def prepare_model(chkpt_dir, arch='mae_vit_large_patch16', device='cpu'):
     # build model
     model = getattr(models_mae, arch)()
     # load model
-    # 获取当前的工作目录
-    current_path = os.getcwd()
-
-    # 打印当前的工作目录
-    # print(current_path)
-    # print("chkpt_dir: ", chkpt_dir)
     checkpoint = torch.load(chkpt_dir, map_location='cpu')
     msg = model.load_state_dict(checkpoint['model'], strict=False)
     # print(msg)
     model.to(device)
+
     return model
 
 
@@ -150,32 +145,18 @@ def generate_image(orig_image, model, ids_shuffle, len_keep: int, device: str = 
     """ids_shuffle is [bs, 196]"""
     mask, orig_image, x = generate_raw_prediction(device, ids_shuffle, len_keep, model, orig_image)
     num_patches = 14
-    # print('x: ', x)
-    # print('x size: ', x.shape)
     y = x.argmax(dim=-1)
-    # print('y: ', y)
-    # print('y size: ', y.shape)
     im_paste, mask, orig_image = decode_raw_predicion(mask, model, num_patches, orig_image, y)
 
     return orig_image, im_paste[0], mask
 
 
-# @torch.no_grad()
 def generate_raw_pred_for_train(orig_image, model, ids_shuffle, len_keep: int, device: str = 'cpu'):
     """ids_shuffle is [bs, 196]"""
     x_stack = torch.tensor([])
     batch_size = orig_image.shape[0]
     for i in range(batch_size):
         x, mask = generate_for_training(orig_image[i], model, ids_shuffle, len_keep, device)
-        # num_patches = 14
-        # print('x: ', x)
-        # print('x size: ', x.shape)
-        # y = x.argmax(dim=-1)
-        # print('y: ', y)
-        # print('y size: ', y.shape)
-        # print('mask: ', mask)
-        # print('mask size: ', mask.shape)
-        # im_paste, mask, orig_image = decode_raw_predicion(mask, model, num_patches, orig_image, y)
         if len(x_stack) == 0:
             x_stack = x
         else:
@@ -188,12 +169,8 @@ def decode_raw_predicion(mask, model, num_patches, orig_image, y):
     y = model.vae.quantize.get_codebook_entry(y.reshape(-1),
                                               [y.shape[0], y.shape[-1] // num_patches, y.shape[-1] // num_patches, -1])
     y = model.vae.decode(y)
-    # plt.figure(); plt.imshow(y.cpu()[0].permute(1,2,0)); plt.show()
     y = F.interpolate(y, size=(224, 224), mode='bilinear').permute(0, 2, 3, 1)
     y = torch.clip(y * 255, 0, 255).int().detach().cpu()
-    # plt.figure()
-    # plt.imshow(y[0])
-    # plt.show()
 
     # visualize the mask
     mask = mask.unsqueeze(-1).repeat(1, 1, model.patch_embed.patch_size[0] ** 2 * 3)
@@ -204,9 +181,6 @@ def decode_raw_predicion(mask, model, num_patches, orig_image, y):
         torch.clip((orig_image[0].cpu().detach() * imagenet_std + imagenet_mean) * 255, 0, 255).int()).unsqueeze(0)
     # MAE reconstruction pasted with visible patches
     im_paste = orig_image * (1 - mask) + y * mask
-    # plt.figure()
-    # plt.imshow(im_paste[0])
-    # plt.show()
 
     return im_paste, mask, orig_image
 
@@ -273,7 +247,6 @@ def generate_raw_prediction(device, ids_shuffle, len_keep, model, orig_image):
         x_temp = blk.attn.proj(x_temp)
         x_temp = blk.attn.proj_drop(x_temp)
         # Here we continue to the orignal block.
-        # import pdb;pdb.set_trace()
         x = x + blk.drop_path1(x_temp)
 
         x = x + blk.drop_path2(blk.mlp(blk.norm2(x)))
@@ -531,4 +504,5 @@ def generate_decoder_attention_maps(orig_image, model, ids_shuffle, len_keep, in
         x = x + blk.drop_path(x_temp)
 
         x = x + blk.drop_path(blk.mlp(blk.norm2(x)))
+
     return attns

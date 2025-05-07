@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 import json
 import sys
 import random
-# from evaluate.mae_utils import PURPLE, YELLOW
+from evaluate.mae_utils import PURPLE, YELLOW
 
 
 def create_grid_from_images_old(canvas, support_img, support_mask, query_img, query_mask):
@@ -84,11 +84,13 @@ class DatasetPASCAL(Dataset):
 
     def get_top50_images_trn(self):
         images_top50_new = {}
-        for img_name, img_class in self.all_img_metadata_trn:
+        for img_name, img_class in self.img_metadata_trn:
             if img_name not in images_top50_new:
-                images_top50_new[img_name] = {}
+                images_top50_new[img_name] = {'class': []}
 
-            images_top50_new[img_name]['class'] = img_class
+            # Check if img_class is not already in the list to avoid duplicates.
+            if img_class not in images_top50_new[img_name]['class']:
+                images_top50_new[img_name]['class'].append(img_class)
 
         return images_top50_new
 
@@ -313,7 +315,11 @@ class DatasetPASCAL(Dataset):
                 support_class = self.images_top50_trn[support_name]['class']
         else:
             support_name = self.images_top50_for_training[query_name]['top50'][sim_idx]
-            support_class = self.images_top50_trn[support_name]['class']
+            support_classes = self.images_top50_trn[support_name]['class']
+            if class_sample in support_classes:
+                support_class = class_sample
+            else:
+                support_class = support_classes[0]
 
         if support_name == query_name:
             print('support_name = query_name ' + support_name)

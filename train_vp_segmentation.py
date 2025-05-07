@@ -14,7 +14,6 @@ from torch.utils.data import DataLoader
 import torch.multiprocessing as mp
 from trainer.train_models import _generate_result_for_canvas, CustomVP, Scheduler
 from torch.cuda.amp import autocast, GradScaler
-from datetime import datetime
 
 
 def get_args():
@@ -112,6 +111,8 @@ def train(args):
     print('length of val dataset: ', len(val_dataset))
 
     dataloaders = {}
+
+    # set batch size to 1/2 on val set to adapt GPU memory.
     dataloaders['val'] = DataLoader(val_dataset, batch_size=args.batch_size // 2, shuffle=False, num_workers=4)
     dataloaders['train'] = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4)
 
@@ -126,31 +127,27 @@ def train(args):
     if args.vp_model == 'pad':
         print('load pad prompter.')
         VP = CustomVP(args=args, vqgan=vqgan.to(args.device), mode=args.mode, arr=args.arr, p_eps=args.p_eps)
+    else:
+        raise ValueError("Please check the mode of InMeMo!")
 
     VP.to(args.device)
 
     optimizer = torch.optim.Adam(VP.PadPrompter.parameters(), lr=args.lr, weight_decay=0)
     scheduler = Scheduler(args.scheduler, args.epoch).select_scheduler(optimizer)
 
-    today = datetime.today()
-    date = today.date()
     if args.fsl:
-        setting = f'{date}_{args.mode}_fold{args.fold}_fsl_{args.fsl}_{args.n_shot}_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
+        setting = f'{args.mode}_fold{args.fold}_fsl_{args.fsl}_{args.n_shot}_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
     else:
-        setting = f'{date}_{args.mode}_fold{args.fold}_fsl_{args.fsl}_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
+        setting = f'{args.mode}_fold{args.fold}_fsl_{args.fsl}_aug_{args.aug}_scheduler{args.scheduler}_{args.lr}_{args.task}_{args.arr}'
 
-    model_save_path = f'./trainer/save_{args.vp_model}_model/{args.mode}_{args.optimizer}_fold_{args.fold}_trn_all_val/{setting}'
-    eg_save_path = f'{args.output_dir}/{args.vp_model}_output_examples/{args.mode}_{args.optimizer}_fold_{args.fold}_trn_all_val'
+    model_save_path = f'./trainer/save_{args.vp_model}_model/{args.mode}_{args.optimizer}_fold_{args.fold}/{setting}'
+    eg_save_path = f'{args.output_dir}/{args.vp_model}_output_examples/{args.mode}_{args.optimizer}_fold_{args.fold}'
 
     os.makedirs(model_save_path, exist_ok=True)
     os.makedirs(eg_save_path, exist_ok=True)
 
     print(f'We use the mode of {args.mode}.')
     print(f'We adopt the arrangement of {args.arr}.')
-    if args.aug:
-        print("This is the aug dataloader.")
-    else:
-        print("This is no aug dataloader.")
 
     print("*" * 50)
 
@@ -167,7 +164,7 @@ def train(args):
         print("start_training round" + str(epoch))
         print("lr_rate: ", optimizer.param_groups[0]["lr"])
         lr_list.append(optimizer.param_groups[0]["lr"])
-        VP.train()  # set model to train
+        VP.train()
         for i, data in enumerate(tqdm(dataloaders['train'])):
             len_dataloader = len(dataloaders['train'])
             support_img, support_mask, query_img, query_mask, grid_stack =\
