@@ -9,6 +9,9 @@
 
 ![InMeMo](Figure/inmemo.png)
 
+## News
+- **[2025/04/29]** Please check the new version of [E-InMeMo](https://arxiv.org/abs/2504.18158)!!
+
 ## Environment Setup
 ```
 conda create -n inmemo python=3.8 -y
@@ -33,7 +36,8 @@ Please follow the [Visual Prompting](https://github.com/amirbar/visual_prompting
 ## Training
 ### For foreground segmentation:
 ```
-python train_vp_segmentation.py --mode spimg_spmask --output_dir output_samples --device cuda:0 --base_dir ./pascal-5i --batch-size 32 --lr 40 --epoch 100 --scheduler cosinewarm --optimizer Adam --arr a1 --vp-model pad --p-eps 1
+# Change the fold for training each split.
+python train_vp_segmentation.py --mode spimg_spmask --output_dir output_samples --fold 3 --device cuda:0 --base_dir ./pascal-5i --batch-size 32 --lr 40 --epoch 100 --scheduler cosinewarm --optimizer Adam --arr a1 --vp-model pad --p-eps 1
 ```
 ### For single object detection:
 ```
@@ -44,20 +48,21 @@ python train_vp_detection.py --mode spimg_spmask --output_dir output_samples --d
 ### For foreground segmentation
 #### With prompt enhancer
 ```
-python val_vp_segmentation.py --mode spimg_spmask --batch-size 16 --fold 0 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
+# Change the fold for testing each split.
+python val_vp_segmentation.py --mode spimg_spmask --batch-size 16 --fold 3 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
 ```
 #### Without prompt enhancer
 ```
-python val_vp_segmentation.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --output_dir visual_examples
+python val_vp_segmentation.py --mode no_vp --batch-size 16 --fold 3 --arr a1 --output_dir visual_examples
 ```
 ### For single object detection
 #### With prompt enhancer
 ```
-python val_vp_detection.py --mode spimg_spmask --batch-size 16 --fold 0 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
+python val_vp_detection.py --mode spimg_spmask --batch-size 16 --arr a1 --vp-model pad --output_dir visual_examples --save_model_path MODEL_SAVE_PATH
 ```
 #### Without prompt enhancer
 ```
-python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-model pad --output_dir visual_examples
+python val_vp_detection.py --mode no_vp --batch-size 16 --arr a1 --vp-model pad --output_dir visual_examples
 ```
 
 ## Performance
@@ -71,12 +76,14 @@ python val_vp_detection.py --mode no_vp --batch-size 16 --fold 0 --arr a1 --vp-m
 ## Citation
 If you find this work useful, please consider citing us as: 
 ```
-@article{zhang2023instruct,
+@inproceedings{zhang2024instruct,
   title={Instruct Me More! Random Prompting for Visual In-Context Learning},
   author={Zhang, Jiahao and Wang, Bowen and Li, Liangzhi and Nakashima, Yuta and Nagahara, Hajime},
-  journal={arXiv preprint arXiv:2311.03648},
-  year={2023}
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={2597--2606},
+  year={2024}
 }
 ```
+
 ## Acknowledgments
 Part of the code is borrowed from [Visual Prompting](https://github.com/amirbar/visual_prompting), [visual_prompt_retrieval](https://github.com/ZhangYuanhan-AI/visual_prompt_retrieval), [timm](https://github.com/huggingface/pytorch-image-models), [ILM-VP](https://github.com/OPTML-Group/ILM-VP)
